@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>360° Image Browser</title>
+  <meta aframe-injected="" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover">
+  <meta aframe-injected="" name="mobile-web-app-capable" content="yes">
+  <meta aframe-injected="" name="theme-color" content="black">
+  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@2c5c131dccaab9d449fcd0383e98d027a5bc07f6/dist/aframe-master.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@5.x.x/dist/aframe-event-set-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-layout-component@4.x.x/dist/aframe-layout-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+  
+  <script id="link" type="text/html">
+    <a-entity class="link"
+        geometry="primitive: plane; height: 1; width: 1"
+        material="shader: flat; src: ${thumb}"
+        event-set__mouseenter="scale: 1.2 1.2 1"
+        event-set__mouseleave="scale: 1 1 1"
+        event-set__click="_target: #image-360; _delay: 300; material.src: ${src}"
+        proxy-event="event: click; to: #image-360; as: fade"
+        sound="on: click; src: #click-sound"></a-entity>
+  </script>
+</head>
+<body>
+	<!-- HTML goes here -->
+    <a-scene>
+        <a-assets>
+          <audio id="click-sound" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"></audio>
+      
+          <!-- Images. -->
+          <img id="city" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg">
+          <img id="city-thumb" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-city.jpg">
+          <img id="cubes" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg">
+          <img id="cubes-thumb" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-cubes.jpg">
+          <img id="sechelt" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
+          <img id="sechelt-thumb" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-sechelt.jpg">
+        </a-assets>
+      
+        <!-- 360-degree image. -->
+        <a-sky id="image-360" radius="10" src="#city"
+        animation__fade="property: components.material.material.color; type: color; from: #FFF; to: #000; dur: 300; startEvents: fade"
+        animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: animationcomplete__fade"></a-sky>
+
+        <!-- Pass image sources to the template. -->
+        <a-entity id="links" layout="type: line; margin: 1.5" position="0 -1 -4">
+            <a-entity template="src: #link" data-src="#city" data-thumb="#city-thumb"></a-entity>
+            <a-entity template="src: #link" data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
+            <a-entity template="src: #link" data-src="#sechelt" data-thumb="#sechelt-thumb"></a-entity>
+        </a-entity>
+      
+        <!-- Camera + Cursor. -->
+        <a-entity camera look-controls>
+          <a-entity cursor="" 
+          id="cursor" 
+          animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+          animation__mouseenter="property: components.material.material.color; type: color; to: blue; startEvents: mouseenter; dur: 500"
+          animation__mouseleave="property: components.material.material.color; type: color; to: black; startEvents: mouseleave; dur: 500;" 
+          raycaster="objects: .link" 
+          material="color: black; shader: flat" 
+          position="0 0 -3"
+          geometry="primitive: ring; radiusInner: 0.05; radiusOuter: 0.08;"></a-entity>
+        </a-entity>
+    </a-scene>
+</body>
+</html>
